@@ -1,0 +1,6 @@
+[package]
+name = "rust-check-zds"
+version = "0.1.0"
+authors = ["Ian McLoughlin <mcloughlin.ian@gmail.com>"]
+
+[dependencies]
