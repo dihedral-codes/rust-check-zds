@@ -1,3 +1,8 @@
+use std::io::prelude::*;
+use std::fs::File;
+use std::io::BufReader;
+use std::u64;
+
 const K: usize = 12;
 const D: usize = 8;
 const MASK: u64 = 0xfff;
@@ -21,8 +26,8 @@ fn matrix(d: u64) -> [u64; K] {
   a
 }
 
-fn even_parity(d: u64) -> bool {
-  let parity = d.count_ones() & 1;
+fn even_parity(x: u64) -> bool {
+  let parity = x.count_ones() & 1;
 
   if parity == 1 {
     false
@@ -44,20 +49,13 @@ fn is_zd(a: [u64; K]) -> bool {
 
 struct Bracelets {
   curr: u64
-  , mask: u64
 }
 
 impl Bracelets {
-
-  fn new(k: usize, w: usize) -> Bracelets  {
-
-    // Set the bit mask for k bits.
-    let mask:u64 = !0u64 >> (64 - K);
-
+  fn new(w: usize) -> Bracelets  {
     // Start with 0111..11000....0
-    let curr: u64 = ((1u64 << w) - 1) << (k - w - 1);
-
-    Bracelets { curr: curr, mask: mask }
+    let curr: u64 = (!0u64 >> (64 - w)) << (K - w - 1);
+    Bracelets {curr: curr}
   }
 
 }
@@ -71,7 +69,7 @@ impl Iterator for Bracelets {
     let t:u64 = self.curr | (self.curr - 1);
     self.curr = (t + 1) | (((!t & (t + 1)) - 1) >> (self.curr.trailing_zeros() + 1));
 
-    if self.curr <= self.mask {
+    if self.curr <= MASK {
       Some(self.curr)
     } else {
       None
@@ -82,7 +80,7 @@ impl Iterator for Bracelets {
 fn check_wt(a:[u64;K]) -> (bool, u64) {
 
 	for i in 2..(D/2) {
-    for j in Bracelets::new(K, i) {
+    for j in Bracelets::new(i) {
   		if comb_weight(j, a) < D - i {
         return (false, j);
 		  }
@@ -102,28 +100,42 @@ fn comb_weight(d:u64, a:[u64;K]) -> usize {
 		}
 	}
 
-
 	w
 
 }
 
 
 fn main() {
-  let d: u64 = 0b101111011;
-  let a = matrix(d);
+  // let d: u64 = 0b101111011;
+  // let mut a = matrix(d);
 
-  for i in a.iter() {
-    println!("{:012b}", i);
+	let mut ds:[u64; 524288] = [0; 524288];
+
+  let f = File::open("fergal.txt").unwrap();
+  let reader = BufReader::new(f);
+  let mut i = 0;
+  for line in reader.lines() {
+    let line = line.unwrap().to_string();
+    let x:u64 = u64::from_str_radix(&line, 2).unwrap();
+    ds[i] = x;
+    i += 1;
   }
   
-  println!("ZD: {}", is_zd(matrix(d)));
+  for d in ds.iter() {
+    let d = *d;
+    let a = matrix(d);
+    
+    if !is_zd(a) {
+      println!("{} is not a zero divisor.", d);
+    }
 
-  let result = check_wt(a);
+    let result = check_wt(a);
 
-  if result.0 {
-    println!("{:x} has weight at least {}.", d, D);
-  } else {
-    println!("{:x} with combination {:x} has weight less than {}.", d, result.1, D);
+    if result.0 {
+      println!("{:064b} has minD >= {}.", d, D);
+    } else {
+      println!("{:x} with combination {:x} has weight less than {}.", d, result.1, D);
+    }
   }
 
 }
