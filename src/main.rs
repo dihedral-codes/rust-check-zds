@@ -5,7 +5,7 @@ use std::u64;
 
 const K: usize = 48;
 const D: usize = 16;
-const MASK: u64 = 0xfff;
+const MASK: u64 = 0xffffffffffff;
 
 fn cycle(d: u64, i: usize) -> u64 {
   ((d << i) | (d >> (K - i))) & MASK
@@ -132,9 +132,9 @@ fn main() {
     let result = check_wt(a);
 
     if result.0 {
-      println!("{:064b} has minD >= {}.", d, D);
+      println!("{:048b} has minD >= {}.", d, D);
     } else {
-      println!("{:x} with combination {:x} has weight less than {}.", d, result.1, D);
+      println!("{:048b} with combination {:048b} has weight less than {}.", d, result.1, D);
     }
   }
 
