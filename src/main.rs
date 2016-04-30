@@ -3,8 +3,8 @@ use std::fs::File;
 use std::io::BufReader;
 use std::u64;
 
-const K: usize = 12;
-const D: usize = 8;
+const K: usize = 48;
+const D: usize = 16;
 const MASK: u64 = 0xfff;
 
 fn cycle(d: u64, i: usize) -> u64 {
