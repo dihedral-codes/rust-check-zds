@@ -109,9 +109,9 @@ fn main() {
   // let d: u64 = 0b101111011;
   // let mut a = matrix(d);
 
-	let mut ds:[u64; 524288] = [0; 524288];
+	let mut ds:[u64; 217694] = [0; 217694];
 
-  let f = File::open("fergal.txt").unwrap();
+  let f = File::open("remaining.txt").unwrap();
   let reader = BufReader::new(f);
   let mut i = 0;
   for line in reader.lines() {
