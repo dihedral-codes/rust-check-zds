@@ -4,7 +4,7 @@ use std::io::BufReader;
 use std::u64;
 
 const K: usize = 48;
-const D: usize = 16;
+const D: usize = 20;
 const MASK: u64 = 0xffffffffffff;
 
 fn cycle(d: u64, i: usize) -> u64 {
@@ -109,9 +109,9 @@ fn main() {
   // let d: u64 = 0b101111011;
   // let mut a = matrix(d);
 
-	let mut ds:[u64; 217694] = [0; 217694];
+	let mut ds:[u64; 42984] = [0; 42984];
 
-  let f = File::open("remaining.txt").unwrap();
+  let f = File::open("atleast16.txt").unwrap();
   let reader = BufReader::new(f);
   let mut i = 0;
   for line in reader.lines() {
