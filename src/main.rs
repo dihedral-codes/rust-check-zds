@@ -4,7 +4,7 @@ use std::io::BufReader;
 use std::u64;
 
 const K: usize = 48;
-const D: usize = 20;
+const D: usize = 18;
 const MASK: u64 = 0xffffffffffff;
 
 fn cycle(d: u64, i: usize) -> u64 {
